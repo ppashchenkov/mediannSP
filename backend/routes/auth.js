@@ -16,7 +16,6 @@ const validateLogin = [
 ];
 
 // Routes
-router.post('/register', validateRegister, register);
 router.post('/login', validateLogin, login);
 router.post('/logout', logout);
 router.post('/refresh', refreshToken);

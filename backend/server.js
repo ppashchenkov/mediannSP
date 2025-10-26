@@ -4,6 +4,50 @@ const path = require('path');
 require('dotenv').config();
 
 const { dbConfig, environment } = require('./config/database');
+const knex = require('knex')(dbConfig);
+
+// Function to initialize the admin user
+const initializeAdminUser = async () => {
+  const bcrypt = require('bcryptjs');
+  const User = require('./models/User');
+  const Role = require('./models/Role');
+  
+  try {
+    // Check if admin user already exists
+    const adminUser = await knex('users').where({ email: 'ua3aaz@gmail.com' }).first();
+    
+    if (!adminUser) {
+      // Create admin role if it doesn't exist
+      let adminRole = await knex('roles').where({ name: 'admin' }).first();
+      if (!adminRole) {
+        const [roleId] = await knex('roles').insert({
+          name: 'admin',
+          description: 'Administrator with full access'
+        });
+        adminRole = { id: roleId };
+      }
+      
+      // Hash the admin password
+      const hashedPassword = await bcrypt.hash('vtjCH60(', 10);
+      
+      // Create the admin user
+      await knex('users').insert({
+        username: 'admin',
+        email: 'ua3aaz@gmail.com',
+        password_hash: hashedPassword,
+        role_id: adminRole.id,
+        created_at: knex.fn.now(),
+        updated_at: knex.fn.now()
+      });
+      
+      console.log('Admin user created successfully');
+    } else {
+      console.log('Admin user already exists');
+    }
+  } catch (error) {
+    console.error('Error initializing admin user:', error);
+  }
+};
 
 // Initialize Express app
 const app = express();
@@ -46,6 +90,9 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
+// Initialize the admin user when the server starts
+initializeAdminUser();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT} in ${environment} mode`);

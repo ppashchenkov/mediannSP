@@ -119,11 +119,7 @@ const Login: React.FC = () => {
                   Забыли пароль?
                 </Link>
               </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Нет аккаунта? Зарегистрироваться"}
-                </Link>
-              </Grid>
+              {/* Registration link removed - self-registration is disabled. Only admins can create users. */}
             </Grid>
           </Box>
         </Paper>
