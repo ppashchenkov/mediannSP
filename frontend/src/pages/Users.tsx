@@ -109,7 +109,10 @@ const Users: React.FC = () => {
       }
     };
 
-    fetchData();
+    fetchData().catch(error => {
+      setError('Ошибка при загрузке данных');
+      console.error('Unexpected error during data fetch:', error);
+    });
   }, []);
 
   const handleEditClick = (user: User) => {

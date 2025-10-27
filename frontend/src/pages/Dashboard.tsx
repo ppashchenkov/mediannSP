@@ -21,9 +21,9 @@ import {
   People as UsersIcon,
   Storage as ComponentsIcon
 } from '@mui/icons-material';
-import { DeviceCard } from '../components/devices/DeviceCard.tsx';
-import { ComponentCard } from '../components/components/ComponentCard.tsx';
-import Navbar from '../components/common/Navbar.tsx';
+import { DeviceCard } from '../components/devices/DeviceCard';
+import { ComponentCard } from '../components/components/ComponentCard';
+import Navbar from '../components/common/Navbar';
 
 const drawerWidth = 240;
 

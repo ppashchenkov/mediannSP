@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Box, Toolbar } from '@mui/material';
-import Navbar from '../components/common/Navbar.tsx';
+import Navbar from '../components/common/Navbar';
 
 const drawerWidth = 240;
 

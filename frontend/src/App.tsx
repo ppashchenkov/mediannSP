@@ -2,14 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import { AuthProvider } from './contexts/AuthContext.tsx';
-import Dashboard from './pages/Dashboard.tsx';
-import Login from './pages/Login.tsx';
-import Devices from './pages/Devices.tsx';
-import Components from './pages/Components.tsx';
-import Users from './pages/Users.tsx';
-import Search from './pages/Search.tsx';
-import Settings from './pages/Settings.tsx';
+import { AuthProvider } from './contexts/AuthContext';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Devices from './pages/Devices';
+import Components from './pages/Components';
+import Users from './pages/Users';
+import Search from './pages/Search';
+import Settings from './pages/Settings';
 import './App.css';
 
 // Create a theme

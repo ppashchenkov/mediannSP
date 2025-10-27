@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import authService from '../services/authService.ts';
+import authService from '../services/authService';
 
 interface User {
   id: number;
