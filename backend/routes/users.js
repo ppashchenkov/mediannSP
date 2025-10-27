@@ -104,6 +104,11 @@ router.put('/:id', authenticateToken, authorizeRole(['admin']), validateUserUpda
 // DELETE /api/users/:id - Delete user (admin only)
 router.delete('/:id', authenticateToken, authorizeRole(['admin']), async (req, res) => {
   try {
+    // Check if the user is trying to delete themselves
+    if (parseInt(req.params.id) === req.user.id) {
+      return res.status(400).json({ error: 'Cannot delete yourself' });
+    }
+    
     const user = new User(knex);
     const deletedCount = await user.delete(req.params.id);
     
@@ -112,7 +117,7 @@ router.delete('/:id', authenticateToken, authorizeRole(['admin']), async (req, r
     }
     
     res.json({ message: 'User deleted successfully' });
-  } catch (error) {
+ } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });

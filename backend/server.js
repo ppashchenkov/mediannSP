@@ -60,6 +60,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
+const roleRoutes = require('./routes/roles');
 const deviceRoutes = require('./routes/devices');
 const componentRoutes = require('./routes/components');
 const photoRoutes = require('./routes/photos');
@@ -69,6 +70,7 @@ const printRoutes = require('./routes/print');
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/roles', roleRoutes);
 app.use('/api/devices', deviceRoutes);
 app.use('/api/components', componentRoutes);
 app.use('/api/photos', photoRoutes);
