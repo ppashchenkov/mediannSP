@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Box,
-  Toolbar,
   Table,
   TableBody,
   TableCell,
@@ -26,10 +25,7 @@ import {
   InputLabel
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import Navbar from '../components/common/Navbar';
 import api from '../services/api';
-
-const drawerWidth = 240;
 
 interface User {
   id: number;
@@ -171,152 +167,141 @@ const Users: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Navbar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` }
-        }}
-      >
-        <Toolbar />
-        <Container maxWidth="lg">
-          <Typography component="h1" variant="h4" align="center" gutterBottom>
-            Пользователи
-          </Typography>
-          <Typography variant="body1" align="center" gutterBottom>
-            Страница управления пользователями
-          </Typography>
-          
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-          
-          {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 4 }}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="users table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Имя пользователя</TableCell>
-                    <TableCell>Электронная почта</TableCell>
-                    <TableCell>Роль</TableCell>
-                    <TableCell>Дата создания</TableCell>
-                    <TableCell>Действия</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow
-                      key={user.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {user.id}
-                      </TableCell>
-                      <TableCell>{user.username}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role_name}</TableCell>
-                      <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell>
+    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Container maxWidth="lg">
+        <Typography component="h1" variant="h4" align="center" gutterBottom>
+          Пользователи
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom>
+          Страница управления пользователями
+        </Typography>
+        
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="users table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Имя пользователя</TableCell>
+                  <TableCell>Электронная почта</TableCell>
+                  <TableCell>Роль</TableCell>
+                  <TableCell>Дата создания</TableCell>
+                  <TableCell>Действия</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {user.id}
+                    </TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role_name}</TableCell>
+                    <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        color="primary"
+                        size="small"
+                        onClick={() => handleEditClick(user)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      {currentUser && currentUser.id !== user.id && (
                         <IconButton
-                          color="primary"
+                          color="error"
                           size="small"
-                          onClick={() => handleEditClick(user)}
+                          onClick={() => handleDeleteClick(user)}
                         >
-                          <EditIcon />
+                          <DeleteIcon />
                         </IconButton>
-                        {currentUser && currentUser.id !== user.id && (
-                          <IconButton
-                            color="error"
-                            size="small"
-                            onClick={() => handleDeleteClick(user)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </Container>
-        
-        {/* Edit User Dialog */}
-        <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-          <DialogTitle>Редактировать пользователя</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Имя пользователя"
-              fullWidth
-              variant="outlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-              margin="dense"
-              label="Электронная почта"
-              fullWidth
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <FormControl fullWidth margin="dense">
-              <InputLabel>Роль</InputLabel>
-              <Select
-                value={roleId}
-                label="Роль"
-                onChange={(e) => setRoleId(Number(e.target.value))}
-              >
-                {roles.map((role) => (
-                  <MenuItem key={role.id} value={role.id}>
-                    {role.name}
-                  </MenuItem>
+                      )}
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </Select>
-            </FormControl>
-            <TextField
-              margin="dense"
-              label="Пароль (оставьте пустым, чтобы не изменять)"
-              type="password"
-              fullWidth
-              variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setEditDialogOpen(false)}>Отмена</Button>
-            <Button onClick={handleEditSubmit}>Сохранить</Button>
-          </DialogActions>
-        </Dialog>
-        
-        {/* Delete Confirmation Dialog */}
-        <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-          <DialogTitle>Подтверждение удаления</DialogTitle>
-          <DialogContent>
-            <Typography>
-              Вы уверены, что хотите удалить пользователя {selectedUser?.username}?
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)}>Отмена</Button>
-            <Button onClick={handleDeleteConfirm} color="error">Удалить</Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Container>
+      
+      {/* Edit User Dialog */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle>Редактировать пользователя</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Имя пользователя"
+            fullWidth
+            variant="outlined"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Электронная почта"
+            fullWidth
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Роль</InputLabel>
+            <Select
+              value={roleId}
+              label="Роль"
+              onChange={(e) => setRoleId(Number(e.target.value))}
+            >
+              {roles.map((role) => (
+                <MenuItem key={role.id} value={role.id}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            margin="dense"
+            label="Пароль (оставьте пустым, чтобы не изменять)"
+            type="password"
+            fullWidth
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Отмена</Button>
+          <Button onClick={handleEditSubmit}>Сохранить</Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Подтверждение удаления</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Вы уверены, что хотите удалить пользователя {selectedUser?.username}?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Отмена</Button>
+          <Button onClick={handleDeleteConfirm} color="error">Удалить</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

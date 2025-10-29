@@ -5,9 +5,11 @@ class Device {
 
   async getAll(page = 1, limit = 10, search = '', deviceTypeId = null, status = null, location = null) {
     let query = this.knex('devices')
-      .select('devices.*', 'device_types.name as device_type_name', 'users.username as created_by_username')
+      .select('devices.*', 'device_types.name as device_type_name', 'users.username as created_by_username', 'users_updated.username as updated_by_username', 'contracts.contract_number')
       .leftJoin('device_types', 'devices.device_type_id', 'device_types.id')
-      .leftJoin('users', 'devices.created_by', 'users.id');
+      .leftJoin('users', 'devices.created_by', 'users.id')
+      .leftJoin('users as users_updated', 'devices.updated_by', 'users_updated.id')
+      .leftJoin('contracts', 'devices.contract_id', 'contracts.id');
 
     if (search) {
       query = query.where(function() {
@@ -47,11 +49,13 @@ class Device {
 
   async getById(id) {
     const device = await this.knex('devices')
-      .select('devices.*', 'device_types.name as device_type_name', 
-              'users.username as created_by_username', 'users_updated.username as updated_by_username')
+      .select('devices.*', 'device_types.name as device_type_name',
+              'users.username as created_by_username', 'users_updated.username as updated_by_username',
+              'contracts.contract_number')
       .leftJoin('device_types', 'devices.device_type_id', 'device_types.id')
       .leftJoin('users', 'devices.created_by', 'users.id')
       .leftJoin('users as users_updated', 'devices.updated_by', 'users_updated.id')
+      .leftJoin('contracts', 'devices.contract_id', 'contracts.id')
       .where({ 'devices.id': id })
       .first();
 
@@ -68,6 +72,11 @@ class Device {
   }
 
   async create(deviceData) {
+    // Проверяем, что contract_id присутствует при создании устройства
+    if (!deviceData.contract_id) {
+      throw new Error('Contract ID is required when creating a device');
+    }
+    
     const [id] = await this.knex('devices').insert(deviceData).returning('id');
     return this.getById(id);
   }

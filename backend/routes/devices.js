@@ -9,12 +9,14 @@ const router = express.Router();
 // Validation middleware
 const validateDevice = [
   body('name').notEmpty().withMessage('Device name is required'),
-  body('device_type_id').isInt({ min: 1 }).withMessage('Valid device type ID is required')
+  body('device_type_id').isInt({ min: 1 }).withMessage('Valid device type ID is required'),
+  body('contract_id').isInt({ min: 1 }).withMessage('Valid contract ID is required')
 ];
 
 const validateDeviceUpdate = [
   body('name').optional().notEmpty().withMessage('Device name cannot be empty if provided'),
-  body('device_type_id').optional().isInt({ min: 1 }).withMessage('Valid device type ID is required if provided')
+  body('device_type_id').optional().isInt({ min: 1 }).withMessage('Valid device type ID is required if provided'),
+  body('contract_id').optional().isInt({ min: 1 }).withMessage('Valid contract ID is required if provided')
 ];
 
 const validateDeviceComponent = [
@@ -81,6 +83,7 @@ router.post('/', authenticateToken, authorizeRole(['writer', 'admin']), validate
       purchase_date: req.body.purchase_date,
       warranty_date: req.body.warranty_date,
       status: req.body.status || 'active',
+      contract_id: req.body.contract_id, // Add contract ID
       created_by: req.user.id // Set the creator to the authenticated user
     };
     
@@ -115,6 +118,7 @@ router.put('/:id', authenticateToken, authorizeRole(['writer', 'admin']), valida
     if (req.body.purchase_date) updateData.purchase_date = req.body.purchase_date;
     if (req.body.warranty_date) updateData.warranty_date = req.body.warranty_date;
     if (req.body.status) updateData.status = req.body.status;
+    if (req.body.contract_id) updateData.contract_id = req.body.contract_id; // Add contract ID if provided
     updateData.updated_by = req.user.id; // Set the updater to the authenticated user
     
     const updatedDevice = await device.update(req.params.id, updateData);

@@ -62,20 +62,24 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const roleRoutes = require('./routes/roles');
 const deviceRoutes = require('./routes/devices');
+const deviceTypeRoutes = require('./routes/deviceTypes');
 const componentRoutes = require('./routes/components');
 const photoRoutes = require('./routes/photos');
 const searchRoutes = require('./routes/search');
 const printRoutes = require('./routes/print');
+const contractsRouter = require('./routes/contracts');
 
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/devices', deviceRoutes);
+app.use('/api/device-types', deviceTypeRoutes);
 app.use('/api/components', componentRoutes);
 app.use('/api/photos', photoRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/print', printRoutes);
+app.use('/api/contracts', contractsRouter);
 
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
